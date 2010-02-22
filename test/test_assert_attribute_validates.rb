@@ -39,19 +39,19 @@ class Article < NoTable
 end
 
 class ArticleTest < Test::Unit::TestCase
-  include AssertPropertyValidates
+  include AssertAttributeValidates
 
   def test_validation
     article = Article.new
-    assert_nothing_raised { assert_property_validates :title, :model => article }
+    assert_nothing_raised { assert_attribute_validates :title, :model => article }
     assert !article.errors.on(:title)
   end
 
   def test_model_is_created_from_test_class_name
-    assert_nothing_raised { assert_property_validates :title }
+    assert_nothing_raised { assert_attribute_validates :title }
   end
 
-  def test_property_name_is_detected_from_test_name
+  def test_attribute_name_is_detected_from_test_name
     article = Article.new
     assert_nothing_raised { some_test_for_number_of_pages_property(article) }
     #Make sure the property was assigned to, number_of_pages defaults to 1
@@ -64,44 +64,44 @@ class ArticleTest < Test::Unit::TestCase
 
   def test_error_message_validation
     e = nil
-    assert_property_validates :title, :message => 'What it izzzz girl!' rescue e = $!.message
+    assert_attribute_validates :title, :message => 'What it izzzz girl!' rescue e = $!.message
     assert_match /^error message/, e
-    assert_nothing_raised { assert_property_validates :title, :message => 'is too gregarious or terse' }
+    assert_nothing_raised { assert_attribute_validates :title, :message => 'is too gregarious or terse' }
   end
 
   def test_validates_asociation
     article = Article.new
-    assert_nothing_raised { assert_property_validates :author, :model => article }
+    assert_nothing_raised { assert_attribute_validates :author, :model => article }
     assert_not_nil article.author
   end
 
-  def test_error_raised_when_property_should_be_invalid
+  def test_error_raised_when_attribute_should_be_invalid
     e = nil
-    assert_property_validates :title, :invalid => proc { |model| model.title = 'This is valid' } rescue e = $!.message
+    assert_attribute_validates :title, :invalid => proc { |model| model.title = 'This is valid' } rescue e = $!.message
     assert_match /^assigned value/, e
   end
 
-  def test_error_raised_when_property_should_be_valid
+  def test_error_raised_when_attribute_should_be_valid
     e = nil
-    assert_property_validates :number_of_pages, :valid => -1 rescue e = $!.message
+    assert_attribute_validates :number_of_pages, :valid => -1 rescue e = $!.message
     assert_match /^must be greater/, e
   end
 
   private
   def validates_presence_of_title(instance)
-    assert_property_validates :model => instance
+    assert_attribute_validates :model => instance
   end
 
   def some_test_for_number_of_pages_property(instance)
-    assert_property_validates :model => instance
+    assert_attribute_validates :model => instance
   end
 end
 
 class BadTestCaseName < Test::Unit::TestCase
-  include AssertPropertyValidates
+  include AssertAttributeValidates
 
   def test_error_raised_when_model_name_cant_be_inferred
-    assert_property_validates :title rescue e = $!.message
+    assert_attribute_validates :title rescue e = $!.message
     assert_match /^No model argument/, e
   end
 end
