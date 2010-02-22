@@ -1,0 +1,87 @@
+# *KEEP ATTRIBUTE FOR PLUGIN NAME*
+=========================
+assert_attribute_validates 
+=========================
+
+Test ActiveRecord attribute validations with minimal effort.
+
+=========================
+Examples
+=========================
+
+class Product < ActiveRecord::Base
+  has_one :category
+  validates_presence_of :name
+  validates_associated :category, 'invalid category'
+  validates_numericality_of :price, :greater_than => 0
+end
+
+class ProductTest < Test::Unit::TestCase
+  test 'name cannot be blank' do
+    assert_attribute_validates
+  end
+
+  test 'must have a price greater than 0' do
+    assert_attribute_validates :invalid => 0
+  end
+
+  test 'must have a valid category' do
+    assert_attribute_validates :message => 'invalid category', 
+    			       :valid => lambda { |product| Category.find_by_name( 'Food' ) }
+  end
+end
+
+=========================
+Requirements
+=========================
+
+ActiveRecord, ActiveSupport, Test::Unit::Assertions
+
+=========================
+Description
+=========================
+
+assert_attribute_validates takes away some of the repetidness involved with testing your ActiveRecord models
+by infering what you want to validate from the calling class and method and generating simple test data 
+for testing the validation.  Of course, all of this can be tailored to your needs (see Usage below).  
+
+Each call to assert_attribute_validates *can* do three things:
+
+1. Failed Assertion: Assign invalid data to the attribute in question and assert that the validation for the attribute failed
+2. Error Message Assertion: Assert that the expected error message was generated upon failure
+3. Success Assertion: Assign valid data to the attribute in question and assert that validation for the attribute succeded
+
+1 and 2 depend on the arguments provided to assert_attribute_validates and the attribute's underlying column.
+If no invalid value has been provided, or if the attribute's column has a non blank?() default, 1 and 2 will not be asserted.
+2 is only asserted if assertion 1 failed and the expected error message was provided.
+3 will alway be asserted.
+
+If any of these fail an AAAAAA exception will be raised. 
+
+=========================
+Usage
+=========================
+
+assert_attribute_validates(*args)
+
+The first argument can be a String or Symbol denoting name of the attribute to validate. If no name is given an 
+attempt is made to guess what you want to validate by looking for a model's name in the test class' name, 
+and then looking for one of its columns names or associations in the test method's name.
+
+A model's name can only be infered if the test class follows the "ModelTest" naming convention. 
+
+Additional arguments must be given as name/value pairs; all are optional:
+
+:model   - The model to preform validations on. This can be an instance of the model, or a String or Class that will be used to 
+	   create an instance. If no argument is given the model will be inferred from the test class' name. See above.
+:valid   - assign the given value to the attribute before performing the Success Assertion. It is expected that this
+	   value will cause the attribute to pass validation. 
+
+	   If the value is a Proc it will be called with the model as its argument.
+
+	   If no value is given one will be generated based on the attribute's datatype or association type.
+:invalid - assign the given value to the attribute before performing the Failed Assertion. It is expected that this
+	   value will cause the attribute to fail validation. 
+
+	   If the value is a Proc it will be called with the model as its argument.
+:message - assert that a Failed Assertion contins the given message in attribute's errors collection	 	 
