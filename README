@@ -2,7 +2,15 @@
 assert_attribute_validates 
 =========================
 
-Test ActiveRecord attribute validations with minimal effort.
+Rails plugin to test ActiveRecord attribute validations with minimal effort.
+
+=========================
+Install
+=========================
+
+From your Rails project root:
+
+./script/plugin install git://github.com/sshaw/assert_attribute_validates.git
 
 =========================
 Examples
@@ -25,8 +33,7 @@ class ProductTest < Test::Unit::TestCase
   end
 
   test 'must have a valid category' do
-    assert_attribute_validates :message => 'invalid category', 
-    			       :valid => lambda { |product| Category.find_by_name( 'Food' ) }
+    assert_attribute_validates :message => 'invalid category', :valid => lambda { |model| model.category = Category.find_by_name( 'Food' ) }
   end
 end
 
@@ -55,7 +62,7 @@ If no invalid value has been provided, or if the attribute's column has a non bl
 2 is only asserted if assertion 1 failed and the expected error message was provided.
 3 will alway be asserted.
 
-If any of these fail an AAAAAA exception will be raised. 
+For each of step assert_attribute_validates() calls assert(), so a failue will raise a Test::Unit::AssertionFailedError. 
 
 =========================
 Usage
@@ -71,16 +78,17 @@ A model's name can only be infered if the test class follows the "ModelTest" nam
 
 Additional arguments must be given as name/value pairs; all are optional:
 
-:model   - The model to preform validations on. This can be an instance of the model, or a String or Class that will be used to 
-	   create an instance. If no argument is given the model will be inferred from the test class' name. See above.
-:valid   - assign the given value to the attribute before performing the Success Assertion. It is expected that this
-	   value will cause the attribute to pass validation. 
+:model   - The model to preform validations on. This can be an instance of the model, or a String or Class that 
+	   will be used to create an instance. If no argument is given the model will be inferred from the test 
+	   class' name. See above.
+:valid   - assign the given value to the attribute before performing the Success Assertion. It is expected that 
+	   this value will cause the attribute to pass validation. 
 
 	   If the value is a Proc it will be called with the model as its argument.
 
 	   If no value is given one will be generated based on the attribute's datatype or association type.
-:invalid - assign the given value to the attribute before performing the Failed Assertion. It is expected that this
-	   value will cause the attribute to fail validation. 
+:invalid - assign the given value to the attribute before performing the Failed Assertion. It is expected that 
+	   this value will cause the attribute to fail validation. 
 
 	   If the value is a Proc it will be called with the model as its argument.
 :message - assert that a Failed Assertion contins the given message in attribute's errors collection	 	 
