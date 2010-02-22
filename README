@@ -1,4 +1,3 @@
-# *KEEP ATTRIBUTE FOR PLUGIN NAME*
 =========================
 assert_attribute_validates 
 =========================
@@ -85,3 +84,9 @@ Additional arguments must be given as name/value pairs; all are optional:
 
 	   If the value is a Proc it will be called with the model as its argument.
 :message - assert that a Failed Assertion contins the given message in attribute's errors collection	 	 
+
+=========================
+Author
+=========================
+Skye Shaw (sshae@lucas.cis.temple.edu)
+License: http://www.opensource.org/licenses/mit-license.php
