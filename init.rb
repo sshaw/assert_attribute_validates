@@ -1,1 +1,1 @@
-require 'assert_property_validates'
+require 'assert_attribute_validates'

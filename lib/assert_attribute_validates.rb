@@ -1,3 +1,7 @@
+#Author: Skye Shaw (sshaw@lucas.cis.temple.edu)
+#License: http://www.opensource.org/licenses/mit-license.php
+#Description: Test ActiveRecord attribute validations with minimal effort.
+
 module AssertPropertyValidates
   INFERENCE_FAILED_MESSAGE = "No %s argument has been given and I can't infer one from the test %s name".freeze
 
