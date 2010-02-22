@@ -5,7 +5,7 @@
 module AssertAttributeValidates
   INFERENCE_FAILED_MESSAGE = "No %s argument has been given and I can't infer one from the test %s name".freeze
 
-  def assert_property_validates(*args)    
+  def assert_attribute_validates(*args)    
     options = args.last.is_a?(Hash) ? args.pop.dup : {} 
     instance = create_instance(options[:model])
 
@@ -64,4 +64,4 @@ module AssertAttributeValidates
 end
 
 require 'active_support/test_case'
-ActiveSupport::TestCase.send(:include, AssertPropertyValidates)
+ActiveSupport::TestCase.send(:include, AssertAttributeValidates)
